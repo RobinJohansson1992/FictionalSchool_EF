@@ -34,6 +34,7 @@ namespace FictionalSchool_EF
         {
             using (var context = new FictionalSchoolContext())
             {
+                Console.Clear();
                 UI.PrintStudentsUI();
                 int userInput;
                 while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > 4)
