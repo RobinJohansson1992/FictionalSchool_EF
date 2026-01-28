@@ -5,7 +5,7 @@ namespace FictionalSchool_EF
     {
         static void Main(string[] args)
         {
-            FSContent.PrintAllStudents();
+            UI.MainMenu();
         }
     }
 }
