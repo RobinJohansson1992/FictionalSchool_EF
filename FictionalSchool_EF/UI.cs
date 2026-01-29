@@ -8,6 +8,21 @@ namespace FictionalSchool_EF
 {
     internal class UI
     {
+        public static void CheckInput(int min, int max)
+        {
+            int userInput;
+            while (!int.TryParse(Console.ReadLine(), out userInput) || min < 1 || max > 8)
+            {
+                ErrorMessage();
+                Console.ReadKey();
+                PrintStudentsByClassUI();
+            }
+        }
+        public static void PrintStudentsByClassUI()
+        {
+            Console.WriteLine("Välj klass från listan:\n");
+            
+        }
         public static void PrintStudentsUI()
         {
             Console.WriteLine("Visa elever:");
@@ -15,7 +30,8 @@ namespace FictionalSchool_EF
                 "1. Förnamn stigande \n" +
                 "2. Förnamn fallande \n" +
                 "3. Efternamn stigande \n" +
-                "4. Efternamn fallande");
+                "4. Efternamn fallande \n" +
+                "5. Tillbaka");
         }
         public static void ErrorMessage()
         {
@@ -51,7 +67,7 @@ namespace FictionalSchool_EF
                     FSContent.PrintAllStudents();
                     break;
                 case 2:
-                    FSContent.PrintAllStudents();
+                    FSContent.PrintClasses();
                     break;
                 case 3:
                     FSContent.PrintAllStudents();

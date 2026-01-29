@@ -30,6 +30,23 @@ namespace FictionalSchool_EF
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
 
+        public static void PrintClasses()
+        {
+            using (var context = new FictionalSchoolContext())
+            {
+                Console.Clear();
+                UI.PrintStudentsByClassUI();
+                var allClasses = context.Classes
+                    .OrderBy(c => c.ClassId)
+                    .ToList();
+                foreach (var c in allClasses)
+                {
+                    Console.WriteLine($"{c.ClassId}. {c.ClassName}");
+                }
+                UI.CheckInput(1, allClasses.Count);
+            }
+        }
+
         public static void PrintAllStudents()
         {
             using (var context = new FictionalSchoolContext())
@@ -37,7 +54,7 @@ namespace FictionalSchool_EF
                 Console.Clear();
                 UI.PrintStudentsUI();
                 int userInput;
-                while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > 4)
+                while (!int.TryParse(Console.ReadLine(), out userInput) || userInput < 1 || userInput > 5)
                 {
                     UI.ErrorMessage();
                 }
@@ -85,7 +102,10 @@ namespace FictionalSchool_EF
                         Console.WriteLine($"{s.FirstName} {s.LastName}");
                     }
                 }
-
+                if (userInput == 5)
+                {
+                    UI.MainMenu();
+                }
             }
         }
 
