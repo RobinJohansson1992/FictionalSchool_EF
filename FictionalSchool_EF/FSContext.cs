@@ -30,6 +30,8 @@ namespace FictionalSchool_EF
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
 
+
+        // Method that lets the user remove staff from staff-table:
         public static void RemoveStaff(FictionalSchoolContext context)
         {
             Console.Clear();
@@ -65,6 +67,7 @@ namespace FictionalSchool_EF
             Console.WriteLine($"{staffToRemove.Name} togs bort från anställd-listan.");
             Console.ReadKey();
         }
+        // Method that lets the user add staff to the staff-table:
         public static void AddStaff(FictionalSchoolContext context)
         {
             Console.Clear();
@@ -85,20 +88,23 @@ namespace FictionalSchool_EF
             }
             Console.Write("Ange namn för ny anställd: ");
             string name = Console.ReadLine();
-            
+
+            //Create new staff-member:
             var newStaff = new Staff
             {
                 Name = name,
                 RoleId = roleId,
             };
-            context.Staff.Add(newStaff);
-            context.SaveChanges();
+            context.Staff.Add(newStaff); //Add member to the table
+            context.SaveChanges(); //save to DB
             Console.WriteLine($"{newStaff.Name} lades till i anställd-listan.");
             Console.ReadKey();
         }
+        // Method that prints all staff members in chosen order by user:
         public static void PrintStaff(FictionalSchoolContext context)
         {
             Console.Clear();
+            // Join Staff and Role to get needed data:
             var allStaff = context.Staff
                 .Join(
                 context.Roles,
@@ -116,6 +122,7 @@ namespace FictionalSchool_EF
             }
             Console.ReadKey();
         }
+        // Method that prints all classes:
         public static void PrintClasses(FictionalSchoolContext context)
         {
             Console.Clear();
@@ -127,10 +134,11 @@ namespace FictionalSchool_EF
             {
                 Console.WriteLine($"{c.ClassId}. {c.ClassName}");
             }
-            //UI.CheckInput(1, allClasses.Count);
+
             Console.WriteLine($"\n0. Tillbaka <-");
             PrintStudentsByClass(context, allClasses);
         }
+        // Method that prints all students by class:
         public static void PrintStudentsByClass(FictionalSchoolContext context, List<Class> allClasses)
         {
             bool running = true;
@@ -157,7 +165,7 @@ namespace FictionalSchool_EF
                 }
                 Console.Clear();
                 var students = context.Students
-                    .Where(s => s.ClassId == userInput)
+                    .Where(s => s.ClassId == userInput) // only print the students in chosen class
                     .ToList();
                 foreach (var s in students)
                 {
@@ -169,6 +177,7 @@ namespace FictionalSchool_EF
                 running = false;
             }
         }
+        // Method that prints all students in the school:
         public static void PrintAllStudents(FictionalSchoolContext context)
         {
             Console.Clear();

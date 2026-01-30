@@ -9,10 +9,6 @@ namespace FictionalSchool_EF
 {
     internal class UI
     {
-        public static void CheckInput(int min, int max)
-        {
-
-        }
         public static void PrintClassesUI()
         {
             Console.WriteLine("Välj klass från listan:\n");
