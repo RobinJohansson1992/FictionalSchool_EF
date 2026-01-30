@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -29,7 +30,7 @@ namespace FictionalSchool_EF
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Subject> Subjects { get; set; }
 
-        public static void PrintStaff(FictionalSchoolContext context)
+        public static void RemoveStaff(FictionalSchoolContext context)
         {
             Console.Clear();
             var allStaff = context.Staff
@@ -42,10 +43,74 @@ namespace FictionalSchool_EF
                     Roles = r,
                     Staff = s
                 }
-
                 )
+                .OrderBy(s => s.Staff.StaffId)
+                .ToList();
+            foreach (var a in allStaff)
+            {
+                Console.WriteLine($"{a.Staff.StaffId}. {a.Staff.Name}: {a.Roles.RoleName}");
+            }
+            Console.Write("\nAnge anställd-ID på den anställda du vill ta bort: ");
+            int staffId;
+            while (!int.TryParse(Console.ReadLine(), out staffId) || !allStaff.Any(s => s.Staff.StaffId == staffId))
+            {
+                UI.ErrorMessage();
+            }
+
+            var staffToRemove = context.Staff.First(s => s.StaffId == staffId);
+
+            context.Staff.Remove(staffToRemove);
+            context.SaveChanges();
+
+            Console.WriteLine($"{staffToRemove.Name} togs bort från anställd-listan.");
+            Console.ReadKey();
+        }
+        public static void AddStaff(FictionalSchoolContext context)
+        {
+            Console.Clear();
+            var roles = context.Roles
+               .OrderBy(r => r.RoleId)
+               .ToList();
+            Console.WriteLine("Tillgängliga roller:");
+            foreach (var role in roles)
+            {
+                Console.WriteLine($"{role.RoleId}. {role.RoleName}");
+            }
+            Console.WriteLine();
+            Console.Write("Ange roll-ID för ny anställd: ");
+            int roleId;
+            while (!int.TryParse(Console.ReadLine(), out roleId) || roleId > roles.Count || roleId < 1)
+            {
+                UI.ErrorMessage();
+            }
+            Console.Write("Ange namn för ny anställd: ");
+            string name = Console.ReadLine();
+            
+            var newStaff = new Staff
+            {
+                Name = name,
+                RoleId = roleId,
+            };
+            context.Staff.Add(newStaff);
+            context.SaveChanges();
+            Console.WriteLine($"{newStaff.Name} lades till i anställd-listan.");
+            Console.ReadKey();
+        }
+        public static void PrintStaff(FictionalSchoolContext context)
+        {
+            Console.Clear();
+            var allStaff = context.Staff
+                .Join(
+                context.Roles,
+                s => s.RoleId,
+                r => r.RoleId,
+                (s, r) => new
+                {
+                    Roles = r,
+                    Staff = s
+                })
                 .OrderBy(s => s.Staff.StaffId).ToList();
-            foreach(var a in allStaff)
+            foreach (var a in allStaff)
             {
                 Console.WriteLine($"{a.Staff.StaffId}. {a.Staff.Name}: {a.Roles.RoleName}");
             }
@@ -69,128 +134,39 @@ namespace FictionalSchool_EF
         public static void PrintStudentsByClass(FictionalSchoolContext context, List<Class> allClasses)
         {
             bool running = true;
+
             while (running)
             {
-
                 int userInput;
-                while (!int.TryParse(Console.ReadLine(), out userInput))
+                if (!int.TryParse(Console.ReadLine(), out userInput))
                 {
                     UI.ErrorMessage();
+                    Console.ReadKey();
+                    continue;
                 }
-                switch (userInput)
+                if (userInput == 0)
                 {
-                    case 0:
-                        running = false;
-                        break;
-                    case 1:
-                        var classOne = context.Students
-                            .Where(c => c.ClassId == 1)
-                            .ToList();
-                        Console.Clear();
-                        foreach (var c in classOne)
-                        {
-                            Console.WriteLine($"{c.FirstName} {c.LastName}");
-                        }
-                        Console.WriteLine("\nTryck enter för att gå tillbaka.");
-                        Console.ReadKey();
-                        running = false;
-                        break;
-                    case 2:
-                        var classTwo = context.Students
-                            .Where(c => c.ClassId == 2)
-                            .ToList();
-                        Console.Clear();
-                        foreach (var c in classTwo)
-                        {
-                            Console.WriteLine($"{c.FirstName} {c.LastName}");
-                        }
-                        Console.WriteLine("\nTryck enter för att gå tillbaka.");
-                        Console.ReadKey();
-                        running = false;
-                        break;
-                    case 3:
-                        var classThree = context.Students
-                            .Where(c => c.ClassId == 3)
-                            .ToList();
-                        Console.Clear();
-                        foreach (var c in classThree)
-                        {
-                            Console.WriteLine($"{c.FirstName} {c.LastName}");
-                        }
-                        Console.WriteLine("\nTryck enter för att gå tillbaka.");
-                        Console.ReadKey();
-                        running = false;
-                        break;
-                    case 4:
-                        var classFour = context.Students
-                            .Where(c => c.ClassId == 4)
-                            .ToList();
-                        Console.Clear();
-                        foreach (var c in classFour)
-                        {
-                            Console.WriteLine($"{c.FirstName} {c.LastName}");
-                        }
-                        Console.WriteLine("\nTryck enter för att gå tillbaka.");
-                        Console.ReadKey();
-                        running = false;
-                        break;
-                    case 5:
-                        var classFive = context.Students
-                            .Where(c => c.ClassId == 5)
-                            .ToList();
-                        Console.Clear();
-                        foreach (var c in classFive)
-                        {
-                            Console.WriteLine($"{c.FirstName} {c.LastName}");
-                        }
-                        Console.WriteLine("\nTryck enter för att gå tillbaka.");
-                        Console.ReadKey();
-                        running = false;
-                        break;
-                    case 6:
-                        var classSix = context.Students
-                            .Where(c => c.ClassId == 6)
-                            .ToList();
-                        Console.Clear();
-                        foreach (var c in classSix)
-                        {
-                            Console.WriteLine($"{c.FirstName} {c.LastName}");
-                        }
-                        Console.WriteLine("\nTryck enter för att gå tillbaka.");
-                        Console.ReadKey();
-                        running = false;
-                        break;
-                    case 7:
-                        var classSeven = context.Students
-                            .Where(c => c.ClassId == 7)
-                            .ToList();
-                        Console.Clear();
-                        foreach (var c in classSeven)
-                        {
-                            Console.WriteLine($"{c.FirstName} {c.LastName}");
-                        }
-                        Console.WriteLine("\nTryck enter för att gå tillbaka.");
-                        Console.ReadKey();
-                        running = false;
-                        break;
-                    case 8:
-                        var classEight = context.Students
-                            .Where(c => c.ClassId == 8)
-                            .ToList();
-                        Console.Clear();
-                        foreach (var c in classEight)
-                        {
-                            Console.WriteLine($"{c.FirstName} {c.LastName}");
-                        }
-                        Console.WriteLine("\nTryck enter för att gå tillbaka.");
-                        Console.ReadKey();
-                        running = false;
-                        break;
-                    default:
-                        UI.ErrorMessage();
-                        Console.ReadKey();
-                        break;
+                    running = false;
+                    continue;
                 }
+                if (userInput < 1 || userInput > allClasses.Count)
+                {
+                    UI.ErrorMessage();
+                    Console.ReadKey();
+                    continue;
+                }
+                Console.Clear();
+                var students = context.Students
+                    .Where(s => s.ClassId == userInput)
+                    .ToList();
+                foreach (var s in students)
+                {
+                    Console.WriteLine($"{s.FirstName} {s.LastName}");
+                }
+
+                Console.WriteLine("\nTryck enter för att gå tillbaka.");
+                Console.ReadLine();
+                running = false;
             }
         }
         public static void PrintAllStudents(FictionalSchoolContext context)

@@ -51,13 +51,14 @@ namespace FictionalSchool_EF
                 Console.WriteLine("" +
                     "1. Visa personal \n" +
                     "2. Lägg till personal \n" +
+                    "3. Ta bort personal \n" +
                     "\n0. Tillbaka <-");
                 int userInput;
                 while (!int.TryParse(Console.ReadLine(), out userInput))
                 {
                     ErrorMessage();
                     Console.ReadKey();
-                    continue;
+                    return;
                 }
                 switch (userInput)
                 {
@@ -68,7 +69,10 @@ namespace FictionalSchool_EF
                         FSContext.PrintStaff(context);
                         break;
                     case 2:
-                        //addstaff
+                        FSContext.AddStaff(context);
+                        break;
+                    case 3:
+                        FSContext.RemoveStaff(context);
                         break;
                     default:
                         ErrorMessage();
